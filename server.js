@@ -26,6 +26,7 @@ app.get("/api-docs.json", (req, res) => {
 app.use("/api/contact", require("./routes/contactRoutes"));
 app.use("/api/volunteer", require("./routes/volunteerRoutes"));
 app.use("/api/donation", require("./routes/donationRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
