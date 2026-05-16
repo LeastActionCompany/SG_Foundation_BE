@@ -8,15 +8,17 @@ exports.submitVolunteer = async (req, res) => {
 
     const volunteer = await Volunteer.create({ name, email, phone });
 
-    await sendMail(
+    res.json({ success: true, volunteer });
+
+    sendMail(
       "New Volunteer Registration",
       `<h3>Volunteer</h3>
        <p>Name: ${name}</p>
        <p>Email: ${email}</p>
        <p>Phone: ${phone}</p>`
-    );
-
-    res.json({ success: true, volunteer });
+    ).catch((mailError) => {
+      console.error("Volunteer email send failed:", mailError.message);
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -7,9 +7,29 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 
 const app = express();
+const allowedOrigins = (process.env.FRONTEND_URLS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow server-to-server calls and tools like Postman with no origin header.
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS policy: this origin is not allowed."));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // DB

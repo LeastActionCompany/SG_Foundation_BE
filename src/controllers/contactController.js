@@ -8,15 +8,17 @@ exports.submitContact = async (req, res) => {
 
     const contact = await Contact.create({ name, email, message });
 
-    await sendMail(
+    res.json({ success: true, contact });
+
+    sendMail(
       "New Contact Message",
       `<h3>New Contact</h3>
        <p>Name: ${name}</p>
        <p>Email: ${email}</p>
        <p>Message: ${message}</p>`
-    );
-
-    res.json({ success: true, contact });
+    ).catch((mailError) => {
+      console.error("Contact email send failed:", mailError.message);
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
